@@ -1,7 +1,6 @@
 import translate from 'node-google-translate-skidz'
 import { Obra } from './obra.js';
 
-
 async function getArt(id) {
   const url = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`
   
@@ -13,7 +12,7 @@ async function getArt(id) {
     const data = await response.json()
     
     const imagenes = {
-      primaria: data.primaryImage || null,  // Imagen principal
+      primaria: data.primaryImage || '/no-disponible.jpg',  // Imagen principal
       miniatura: data.primaryImageSmall || null,  // Imagen en miniatura
       adicionales: {
         primera: data.additionalImages?.[0] || null,
@@ -22,40 +21,90 @@ async function getArt(id) {
         cuarta: data.additionalImages?.[3] || null
       }
     };
+    let cultura,departamento,pais,titulo,dinastia
+
+    if(data.culture){
+      cultura = await traducir(data.culture)
+    }else{
+      cultura=""
+    }
+
+    if(data.department){
+      departamento = await traducir(data.department)
+    }else{
+      departamento =""
+    }
+
+    if (data.country) {
+      pais = await traducir(data.country)    
+    } else {
+      pais = ""
+    }
+    
+    if (data.title) {
+      titulo = await traducir(data.title)   
+
+    } else {
+      titulo = ""
+    }
+
+    if (data.dynasty) {
+      dinastia = await traducir(data.dynasty)
+
+    } else {
+      dinastia=""
+    }
+
 
     let obraObtenida = new Obra(
       data.objectID,
-      data.department,
-      data.country,
+      departamento,
+      pais,
       imagenes,
-      data.title,
-      data.culture,
-      data.dynasty,
+      titulo,
+      cultura,
+      dinastia,
       data.objectBeginDate
     )
 
     return obraObtenida
   }catch (error) { 
     console.log(`Error obteniendo la data: ${error}`);
-    return null
   }
 }
+function paginarObras(obrasPorPagina) {
+  let ultID = 1;
+  let obrasGuardadas = []; // Aquí se almacenarán todas las obras obtenidas
 
-async function obtenerObras() {
-  const obrasDeArte=[]
-  for (let index = 1; index < 100; index++) {
-    const alrtData = await getArt(index)
-    if (alrtData){
-      obrasDeArte.push(alrtData);
+  return async function obtenerPagina(pagina) {
+    let inicio = (pagina - 1) * obrasPorPagina;
+    let final = pagina * obrasPorPagina;
+
+    // Si ya tienes suficientes obras guardadas para cubrir la página solicitada
+    if (obrasGuardadas.length >= final) {
+      // Devuelve las obras ya guardadas de esa página
+      return obrasGuardadas.slice(inicio, final);
     }
-  }
-  return obrasDeArte
+
+    // Si no tienes suficientes obras, sigue obteniendo hasta llenar la página
+    while (obrasGuardadas.length < final) {
+      const obraData = await getArt(ultID);
+
+      if (obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)) {
+        obrasGuardadas.push(obraData); // Guarda la obra en `obrasGuardadas`
+        console.log(`${ultID} Conseguido`);
+      } else {
+        console.log(`${ultID} Duplicado o no disponible`);
+      }
+      ultID++;
+    }
+
+    console.log(`Ultimo ID guardado: ${ultID}`);
+    return obrasGuardadas.slice(inicio, final); // Devuelve las obras de la página solicitada
+  };
 }
 
-/*(async ()=>{
-  const obrasDeArte = await obtenerObras()
-  console.log(obrasDeArte)
-})()*/
+
 
 function traducir(frase) {
   return new Promise((resolve, reject) => {
@@ -73,18 +122,4 @@ function traducir(frase) {
   });
 }
 
-/*(async () => {
-  try {
-    let hola = "bye";
-    let traducido = await traducir(hola);
-    console.log(traducido);
-  } catch (error) {
-    console.error("Error en la traducción:", error);
-  }
-})();*/
-
-
-let palabra="Hello"
-
-let palabraTraducida = await traducir(palabra)
-console.log(palabraTraducida)
+export const obtenerPagina = paginarObras(20)

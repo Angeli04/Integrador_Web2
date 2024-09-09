@@ -1,0 +1,71 @@
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+}
+
+h1 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* Contenedor principal para menú y obras */
+.content {
+  display: flex;
+  align-items: flex-start;
+}
+
+#menu {
+  width: 200px; /* Ajusta el ancho según sea necesario */
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+#menu ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#menu ul li {
+  margin-bottom: 10px;
+}
+
+#menu ul li a {
+  text-decoration: none;
+  color: #333;
+}
+
+#obras {
+  flex: 1; /* Toma el resto del espacio disponible */
+  padding: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.grid-item {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.grid-item img {
+  width: auto;
+  height: 80px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 0.5rem;
+}
+
+h3 {
+  margin: 0.5rem 0;
+}
+
+p {
+  font-size: 0.9rem;
+  color: #666;
+}

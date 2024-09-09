@@ -3,7 +3,31 @@ html(lang="es")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Document
+        title Museo
+        
+        link(rel="stylesheet", href="/styles/principal.css")
     body 
-     h1 Hola!
-     
+     h1#titulo Obras de Arte
+     .content
+      section#menu
+        nav
+          ul
+            li: a(href="#obras") Obras de Arte
+            li: a(href="#contacto") Contacto
+        input#filtrarDepartamento(type="text", name="FiltrarDepartamento" placeholder="EJ:El ala americana")
+            
+      section#obras
+        .grid 
+         each obra in obrasDeArte
+          .grid-item
+           img(src=obra.imagenes.primaria title=`Fecha de creacion: ${obra.fechaCreacion}`)
+           h3= obra.titulo
+           p Cultura: #{obra.cultura}
+           p Dinastía: #{obra.dinastia}
+      nav.pagination 
+        if pagina > 1
+          a(href=`/?page=${pagina - 1}`) Anterior 
+        a(href=`/?page=${pagina + 1}`) Siguiente 
+    script.
+     window.obrasDeArte = !{JSON.stringify(obrasDeArte)};
+    script(src="/principal.js")
