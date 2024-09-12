@@ -1,7 +1,7 @@
 import translate from 'node-google-translate-skidz'
 import { Obra } from './obra.js';
 
-async function getArt(id) {
+export async function getArt(id) {
   const url = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`
   
   try{
@@ -72,6 +72,7 @@ async function getArt(id) {
     console.log(`Error obteniendo la data: ${error}`);
   }
 }
+
 function paginarObras(obrasPorPagina) {
   let ultID = 1;
   let obrasGuardadas = []; // Aquí se almacenarán todas las obras obtenidas

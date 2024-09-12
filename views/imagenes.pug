@@ -1,0 +1,21 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Imágenes de la Obra
+    link(rel="stylesheet", href="/styles/principal.css")
+  body
+    h1 Imágenes de la Obra #{obra.titulo}
+    
+    if obra.imagenes.adicionales.primera !== null
+      img(src=obra.imagenes.adicionales.primera alt="Imagen adicional 1" width="300")
+    if obra.imagenes.adicionales.segunda !== null
+      img(src=obra.imagenes.adicionales.segunda alt="Imagen adicional 2" width="300")
+    if obra.imagenes.adicionales.tercera !== null
+      img(src=obra.imagenes.adicionales.tercera alt="Imagen adicional 3" width="300")
+    if obra.imagenes.adicionales.cuarta !== null
+      img(src=obra.imagenes.adicionales.cuarta alt="Imagen adicional 4" width="300")
+    
+    // Botón para volver a la página principal
+    a(href="/") Volver a la página principal
