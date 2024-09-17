@@ -17,9 +17,17 @@ html(lang="es")
         label(for="opciones") Elige un departamento: 
         
         select#opciones 
-         option(value="") Opciones
+         option(value=null) Opciones
          each departamento in departamentos
           option(value=departamento.id)= departamento.nombre
+
+        select#paises
+         option(value=null) paises 
+         option(value="Argentina") Argentina 
+         option(value="Brazil") Brasil
+         option(value="Chile") Chile   
+         option(value="Uruguay") Uruguay
+
         button#filtrarBtn Filtrar Obras
         a#limpiarBtn(href="/") Limpiar filtro
 
@@ -37,7 +45,7 @@ html(lang="es")
 
       nav.pagination
        if pagina > 1
-         if departamentoId
+         if departamentoId != ""
            a(href=`/filtrar?departamentoId=${departamentoId}&page=${pagina - 1}`) Página Anterior
          else
            a(href=`/filtrar?page=${pagina - 1}`) Página Anterior

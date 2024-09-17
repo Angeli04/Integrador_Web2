@@ -105,9 +105,7 @@ function paginarObras(obrasPorPagina) {
   };
 }
 
-
-
-function traducir(frase) {
+export function traducir(frase) {
   return new Promise((resolve, reject) => {
     translate({
       text: frase,
@@ -122,5 +120,7 @@ function traducir(frase) {
     });
   });
 }
+
+
 
 export const obtenerPagina = paginarObras(20)
