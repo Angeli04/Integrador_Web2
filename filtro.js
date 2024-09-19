@@ -105,3 +105,35 @@ export function paginarObrasPais(obrasPorPagina,nombrePais) {
         return obrasGuardadas.slice(inicio,final);
     };
 }
+
+export function paginarObrasDepartamentoPais(obrasPorPagina,idDepartment,nombrePais){
+
+    let indiceID = 0;
+    let obrasGuardadas = []
+
+    return async function obtenerPaginaDepartamentoPais(pagina) {
+        const idsPaises = await obtenerIdsPaises(nombrePais)
+        const idsDepartamento = await obtenerIdsDepartamento(idDepartment)
+        let inicio = (pagina-1) * obrasPorPagina
+        let final = pagina * obrasPorPagina
+        const idsCompletos = idsPaises.filter(numero => idsDepartamento.includes(numero));
+
+        if (obrasGuardadas.length >= final) {
+            return obrasGuardadas.slice(inicio,final)
+        }
+
+        while (obrasGuardadas.length < final && indiceID < idsCompletos.length){
+            const obraData = await getArt(idsCompletos[indiceID])
+
+            if(obraData && !obrasGuardadas.some(o=> o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)){
+                obrasGuardadas.push(obraData)
+                console.log(`${idsCompletos[indiceID]} Conseguido`)
+            } else {
+                console.log(`${idsCompletos[indiceID]} Duplicado o no disponible`)
+            }
+            indiceID++;
+        }
+        console.log(`Ultimo ID guardado: ${indiceID}`)
+        return obrasGuardadas.slice(inicio,final)
+    };
+}

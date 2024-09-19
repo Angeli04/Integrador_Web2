@@ -51,4 +51,4 @@ export class Obra {
     getFechaCreacion() {
       return this.fechaCreacion;
     }
-  }
+}

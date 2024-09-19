@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url'; 
 import { obtenerPagina } from './obras.js';
 import { listarDepartamentos } from './departments.js';
-import { paginarObrasDepartamento, obtenerIdsPaises, obtenerIdsDepartamento,paginarObrasPais } from './filtro.js';
+import { paginarObrasDepartamento, obtenerIdsPaises, obtenerIdsDepartamento,paginarObrasPais,paginarObrasDepartamentoPais } from './filtro.js';
 import { getArt } from './obras.js';
 import { isNull } from 'xpress/lib/validate.js';
 
@@ -39,7 +39,11 @@ app.get('/filtrar', async (req, res) => {
   console.log("departamento " + departamentoId)
   try {
 
-    if(departamentoId && pais == "paises"){
+    if(departamentoId && pais){
+      const obtenerPagina = paginarObrasDepartamentoPais(20,departamentoId,pais)
+      const obrasDeArte = await obtenerPagina(pagina)
+      res.render('obras',{obrasDeArte,departamentos})
+    } else if (departamentoId && pais == "paises") {
      const obtenerPagina = paginarObrasDepartamento(20, departamentoId);
      const obrasDeArte = await obtenerPagina(pagina);
      res.render('obras', { obrasDeArte,departamentos });
@@ -48,7 +52,6 @@ app.get('/filtrar', async (req, res) => {
      const obrasDeArte = await obtenerPagina(pagina)
      res.render('obras', { obrasDeArte,departamentos });
     }
-
     //console.log(obrasDeArte)
 
     //res.render('obras', { obrasDeArte,departamentos });
