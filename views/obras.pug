@@ -1,10 +1,9 @@
 .grid 
-  each obra in obrasDeArte
-    .grid-item
-      img(src=obra.imagenes.primaria title=`Fecha de creación: ${obra.fechaCreacion}`)
-      h3= obra.titulo
-      p Cultura: #{obra.cultura}
-      p Dinastía: #{obra.dinastia}
-      // Mostrar botón solo si hay imágenes adicionales
-      if obra.imagenes.adicionales.primera !== null || obra.imagenes.adicionales.segunda !== null || obra.imagenes.adicionales.tercera !== null || obra.imagenes.adicionales.cuarta !== null
-        a(href=`/imagenes/${obra.id}`) Ver más imágenes
+ each obra in obrasDeArte
+  .grid-item
+    img(src=obra.imagenes.primaria title=`Fecha de creación: ${obra.fechaCreacion}` alt=75)
+    h3= obra.titulo
+    p Cultura: #{obra.cultura}
+    p Dinastía: #{obra.dinastia}
+    if obra.imagenes.adicionales.primera !== null || obra.imagenes.adicionales.segunda !== null || obra.imagenes.adicionales.tercera !== null || obra.imagenes.adicionales.cuarta !== null
+      a(href=`/imagenes/${obra.id}`) Ver más imágenes

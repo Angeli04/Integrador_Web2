@@ -73,7 +73,7 @@ export async function getArt(id) {
   }
 }
 
-function paginarObras(obrasPorPagina) {
+export function paginarObras(obrasPorPagina) {
   let ultID = 1;
   let obrasGuardadas = []; // Aquí se almacenarán todas las obras obtenidas
 
@@ -120,7 +120,5 @@ export function traducir(frase) {
     });
   });
 }
-
-
 
 export const obtenerPagina = paginarObras(20)
