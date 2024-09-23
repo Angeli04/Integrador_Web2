@@ -7,6 +7,7 @@ import { paginarObrasDepartamento,paginarObrasPais,paginarObrasDepartamentoPais 
 import { getArt } from './obras.js';
 const app = express();
 const PUERTO = 3000;
+
 // Configurar archivos estáticos
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -44,7 +45,18 @@ app.get('/', (req, res) => {
   res.render('principal'); // Renderiza la página principal con el botón
 });
 
-app.get('/museo', controladorMuseo);
+app.get('/museo', async (req, res) => {
+  const pagina = parseInt(req.query.page) || 1;
+  const departamentos = await listarDepartamentos();
+  const obrasDeArte = await obtenerPagina(pagina);
+
+  try {
+   res.render('museo',{obrasDeArte,departamentos})
+  } catch (error) {
+    console.log(`Error al obtener las obras dentro del index.js: ` + error);
+    res.status(500).send("Error al obtener las obras de arte");
+  }
+});
 
 app.get('/filtrar/departamento/:departamentoId', async (req, res) => {
   const departamentoId = req.params.departamentoId;
@@ -81,7 +93,7 @@ app.get('/filtrardepartamento/:departamentoId/pais/:pais', async (req, res) => {
   const pais = req.params.pais;
   const pagina = parseInt(req.query.page) || 1;
   const departamentos = await listarDepartamentos();
-
+  console.log(pais,departamentoId)
   try {
     const obtenerPagina = paginarObrasDepartamentoPais(20, departamentoId, pais);
     const obrasDeArte = await obtenerPagina(pagina);

@@ -1,52 +1,50 @@
 doctype html
 html(lang="es")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Museo
-        
-        link(rel="stylesheet", href="/styles/principal.css")
-    body 
-     h1#titulo Obras de Arte
-     .content
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Museo
+
+    link(rel="stylesheet", href="/styles/principal.css")
+  body
+    h1#titulo Obras de Arte
+    .content
       section#menu
         nav
           ul
             li: a(href="#obras") Obras de Arte
             li: a(href="#contacto") Contacto
-        label(for="opciones") Elige un departamento: 
         
-        select#opciones 
-         option(value=null) Opciones
-         each departamento in departamentos
-          option(value=departamento.id)= departamento.nombre
+        label(for="opciones") Elige un departamento:
+        select#opciones
+          option(value=null) Opciones
+          each departamento in departamentos
+            option(value=departamento.id)= departamento.nombre
 
         select#paises
-         option(value=null) paises 
-         option(value="Argentina") Argentina 
-         option(value="Brazil") Brasil
-         option(value="Chile") Chile   
-         option(value="Uruguay") Uruguay
+          option paises
+          option(value="Argentina") Argentina
+          option(value="Brazil") Brasil
+          option(value="Chile") Chile
+          option(value="Uruguay") Uruguay
 
         button#filtrarBtn Filtrar Obras
         a#limpiarBtn(href="/") Limpiar filtro
 
+        // Campo de búsqueda
+        .buscador
+          input#buscador(type="text", placeholder="Buscar...")
+          button#buscarBtn
+            img(src="lupa.ico", alt="Buscar")
+
       section#obras
-        .grid 
-         each obra in obrasDeArte
-          .grid-item
-            img(src=obra.imagenes.primaria title=`Fecha de creación: ${obra.fechaCreacion}` alt=75)
-            h3= obra.titulo
-            p Cultura: #{obra.cultura}
-            p Dinastía: #{obra.dinastia}
-            if obra.imagenes.adicionales.primera !== null || obra.imagenes.adicionales.segunda !== null || obra.imagenes.adicionales.tercera !== null || obra.imagenes.adicionales.cuarta !== null
-              a(href=`/imagenes/${obra.id}`) Ver más imágenes
-      
+        include ./obras.pug
+
       nav.pagination
         button#paginaAnterior Página Anterior
         button#paginaSiguiente Página Siguiente
- 
+
     script.
-     window.obrasDeArte = !{JSON.stringify(obrasDeArte)};
-     window.departamentos = !{JSON.stringify(departamentos)}
+      window.obrasDeArte = !{JSON.stringify(obrasDeArte)};
+      window.departamentos = !{JSON.stringify(departamentos)};
     script(src="/museo.js")

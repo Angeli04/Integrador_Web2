@@ -7,7 +7,7 @@ document.getElementById('filtrarBtn').addEventListener('click', async function()
 
   if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado !== "paises") {
     url = `/filtrardepartamento/${encodeURIComponent(departamentoSeleccionado)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${pagina}`;
-  } else if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones") {
+  } else if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado === "paises") {
     url = `/filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}?page=${pagina}`;
   } else if (paisSeleccionado !== "paises") {
     url = `/filtrar/pais/${encodeURIComponent(paisSeleccionado)}?page=${pagina}`;
@@ -99,11 +99,5 @@ document.getElementById('paginaAnterior').addEventListener('click', async functi
 
 // Si el botón de limpiar filtro es presionado, reseteamos a la página general sin filtros
 document.getElementById('limpiarFiltroBtn').addEventListener('click', async function() {
-  try {
-    const response = await fetch(`/`);  // Llamamos a la ruta sin filtro
-    const html = await response.text();
-    document.querySelector('body').innerHTML = html;
-  } catch (error) {
-    console.error('Error al limpiar el filtro:', error);
-  }
+  window.location.href = '/museo?page=1'; // Redirige a la página 1 de las obras
 });

@@ -36,7 +36,6 @@ export function paginarObrasDepartamento(obrasPorPagina, idDepartment) {
     };
 }
 
-
 export async function obtenerIdsDepartamento(id) {
     try {
         const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects?departmentIds=${id}`);
@@ -54,8 +53,6 @@ export async function obtenerIdsDepartamento(id) {
         return [];
     }
 }
-
-
 
 export async function obtenerIdsPaises(pais) {
   
