@@ -1,18 +1,31 @@
 document.getElementById('filtrarBtn').addEventListener('click', async function() {
   const departamentoSeleccionado = document.getElementById('opciones').value;
   const paisSeleccionado = document.getElementById('paises').value;
+  const fraseSeleccionada = document.getElementById('buscador').value.trim();
   const pagina = 1; // Reiniciar siempre a la primera página cuando se cambia el filtro
 
   let url = '';
 
-  if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado !== "paises") {
+  if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado !== "paises" && fraseSeleccionada ==="") {
     url = `/filtrardepartamento/${encodeURIComponent(departamentoSeleccionado)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${pagina}`;
-  } else if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado === "paises") {
+  } else if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada ==="") {
     url = `/filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}?page=${pagina}`;
-  } else if (paisSeleccionado !== "paises") {
+  } else if (paisSeleccionado !== "paises" && departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && fraseSeleccionada ==="") {
     url = `/filtrar/pais/${encodeURIComponent(paisSeleccionado)}?page=${pagina}`;
+  } else if(fraseSeleccionada != '' && departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises"){
+    url = `/filtrar/frase/${encodeURIComponent(fraseSeleccionada)}?page=${pagina}`;
+  }else if (departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada ===""){
+    url = `/obras?page=${pagina}`
+  }else if(departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada != ""){
+    url = `/filtrar/frase/${encodeURIComponent(fraseSeleccionada)}?page=${pagina}`
+  }else if(departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && paisSeleccionado != "paises" && fraseSeleccionada !=""){
+    url = `filtrar/frase/${encodeURIComponent(fraseSeleccionada)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${pagina}`
+  } else if(paisSeleccionado === "paises" && departamentoSeleccionado != "null" && departamentoSeleccionado != "Opciones" && fraseSeleccionada !=""){
+    url = `filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}/frase/${encodeURIComponent(fraseSeleccionada)}?page=${pagina}`;
+  } else if(departamentoSeleccionado != "null" && departamentoSeleccionado != "Opciones" && paisSeleccionado != "paises" && fraseSeleccionada !=""){
+    url=`/filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}/frase/${encodeURIComponent(fraseSeleccionada)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${pagina}`
   }
-
+  
   try {
     const response = await fetch(url);
     if (response.ok) {
@@ -27,23 +40,32 @@ document.getElementById('filtrarBtn').addEventListener('click', async function()
   }
 });
 
-
-
 document.getElementById('paginaSiguiente').addEventListener('click', async function() {
   const departamentoSeleccionado = document.getElementById('opciones').value;
   const paisSeleccionado = document.getElementById('paises').value;
   const paginaActual = parseInt(new URLSearchParams(window.location.search).get('page') || '1');
   const nuevaPagina = paginaActual + 1;
+  const fraseSeleccionada = document.getElementById('buscador').value.trim();
   let url = '';
 
-  if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado !== "paises") {
+  if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado !== "paises" && fraseSeleccionada ==="") {
     url = `/filtrardepartamento/${encodeURIComponent(departamentoSeleccionado)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`;
-  } else if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones") {
+  } else if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada ==="") {
     url = `/filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}?page=${nuevaPagina}`;
-  } else if (paisSeleccionado !== "paises") {
+  } else if (paisSeleccionado !== "paises" && departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && fraseSeleccionada ==="") {
     url = `/filtrar/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`;
-  } else {
-    url = `/museo?page=${nuevaPagina}`; // Página principal si no hay filtros
+  } else if(fraseSeleccionada != '' && departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises"){
+    url = `/filtrar/frase/${encodeURIComponent(fraseSeleccionada)}?page=${nuevaPagina}`;
+  }else if (departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada ===""){
+    url = `/obras?page=${nuevaPagina}`
+  }else if(departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada != ""){
+    url = `/filtrar/frase/${encodeURIComponent(fraseSeleccionada)}?page=${nuevaPagina}`
+  }else if(departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && paisSeleccionado != "paises" && fraseSeleccionada !=""){
+    url = `filtrar/frase/${encodeURIComponent(fraseSeleccionada)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`
+  } else if(paisSeleccionado === "paises" && departamentoSeleccionado != "null" && departamentoSeleccionado != "Opciones" && fraseSeleccionada !=""){
+    url = `filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}/frase/${encodeURIComponent(fraseSeleccionada)}?page=${nuevaPagina}`;
+  } else if(departamentoSeleccionado != "null" && departamentoSeleccionado != "Opciones" && paisSeleccionado != "paises" && fraseSeleccionada !=""){
+    url=`/filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}/frase/${encodeURIComponent(fraseSeleccionada)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`
   }
 
   try {
@@ -62,22 +84,32 @@ document.getElementById('paginaSiguiente').addEventListener('click', async funct
   }
 });
 
-
 document.getElementById('paginaAnterior').addEventListener('click', async function() {
   const departamentoSeleccionado = document.getElementById('opciones').value;
   const paisSeleccionado = document.getElementById('paises').value;
+  const fraseSeleccionada = document.getElementById('buscador').value.trim();
   const paginaActual = parseInt(new URLSearchParams(window.location.search).get('page') || '1');
   const nuevaPagina = paginaActual - 1;
   let url = '';
 
-  if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado !== "paises") {
+  if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado !== "paises" && fraseSeleccionada ==="") {
     url = `/filtrardepartamento/${encodeURIComponent(departamentoSeleccionado)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`;
-  } else if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones") {
+  } else if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada ==="") {
     url = `/filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}?page=${nuevaPagina}`;
-  } else if (paisSeleccionado !== "paises") {
+  } else if (paisSeleccionado !== "paises" && departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && fraseSeleccionada ==="") {
     url = `/filtrar/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`;
-  } else {
-    url = `/museo?page=${nuevaPagina}`; // Página principal si no hay filtros
+  } else if(fraseSeleccionada != '' && departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises"){
+    url = `/filtrar/frase/${encodeURIComponent(fraseSeleccionada)}?page=${nuevaPagina}`;
+  }else if (departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada ===""){
+    url = `/obras?page=${nuevaPagina}`
+  }else if(departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada != ""){
+    url = `/filtrar/frase/${encodeURIComponent(fraseSeleccionada)}?page=${nuevaPagina}`
+  }else if(departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && paisSeleccionado != "paises" && fraseSeleccionada !=""){
+    url = `filtrar/frase/${encodeURIComponent(fraseSeleccionada)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`
+  } else if(paisSeleccionado === "paises" && departamentoSeleccionado != "null" && departamentoSeleccionado != "Opciones" && fraseSeleccionada !=""){
+    url = `filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}/frase/${encodeURIComponent(fraseSeleccionada)}?page=${nuevaPagina}`;
+  } else if(departamentoSeleccionado != "null" && departamentoSeleccionado != "Opciones" && paisSeleccionado != "paises" && fraseSeleccionada !=""){
+    url=`/filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}/frase/${encodeURIComponent(fraseSeleccionada)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`
   }
 
   try {
@@ -94,10 +126,4 @@ document.getElementById('paginaAnterior').addEventListener('click', async functi
   } catch (error) {
     console.error('Error al obtener las obras filtradas:', error);
   }
-});
-
-
-// Si el botón de limpiar filtro es presionado, reseteamos a la página general sin filtros
-document.getElementById('limpiarFiltroBtn').addEventListener('click', async function() {
-  window.location.href = '/museo?page=1'; // Redirige a la página 1 de las obras
 });

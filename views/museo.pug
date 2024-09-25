@@ -10,35 +10,24 @@ html(lang="es")
     h1#titulo Obras de Arte
     .content
       section#menu
-        nav
-          ul
-            li: a(href="#obras") Obras de Arte
-            li: a(href="#contacto") Contacto
-        
         label(for="opciones") Elige un departamento:
         select#opciones
           option(value=null) Opciones
           each departamento in departamentos
             option(value=departamento.id)= departamento.nombre
 
+        label Elige un pais
         select#paises
           option paises
           option(value="Argentina") Argentina
           option(value="Brazil") Brasil
           option(value="Chile") Chile
           option(value="Uruguay") Uruguay
-
+        label Palabra clave 
+        input#buscador(type="text", placeholder="Buscar...")
         button#filtrarBtn Filtrar Obras
-        a#limpiarBtn(href="/") Limpiar filtro
-
-        // Campo de búsqueda
-        .buscador
-          input#buscador(type="text", placeholder="Buscar...")
-          button#buscarBtn
-            img(src="lupa.ico", alt="Buscar")
 
       section#obras
-        include ./obras.pug
 
       nav.pagination
         button#paginaAnterior Página Anterior

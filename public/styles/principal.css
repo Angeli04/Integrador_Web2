@@ -1,77 +1,148 @@
+/* Estilos globales */
 body {
   font-family: Arial, sans-serif;
-  line-height: 1.6;
   margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
 }
 
-h1 {
+h1#titulo {
   text-align: center;
   margin: 20px 0;
-}
-
-/* Contenedor principal para menú y obras */
-.content {
-  display: flex;
-  align-items: flex-start;
-}
-
-#menu {
-  width: 200px; /* Ajusta el ancho según sea necesario */
-  background-color: #f4f4f4;
-  padding: 20px;
-}
-
-#menu ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-#menu ul li {
-  margin-bottom: 10px;
-}
-
-#menu ul li a {
-  text-decoration: none;
   color: #333;
 }
 
+/* Estilos para el menú */
+#menu {
+  background-color: #333;
+  color: #fff;
+  padding: 15px;
+}
+
+#menu nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#menu nav ul li {
+  display: inline;
+  margin-right: 15px;
+}
+
+#menu nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#menu label {
+  display: block;
+  margin: 10px 0 5px;
+}
+
+/* Estilos para los campos de filtro y búsqueda */
+#opciones, #paises {
+  margin: 5px 0;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#filtrarBtn, #limpiarBtn {
+  margin: 10px 0;
+}
+
+.buscador {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+#buscador {
+  flex: 1; /* Ocupa todo el ancho disponible */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-right: 5px; /* Espacio entre el campo y el botón */
+}
+
+#buscarBtn {
+  padding: 10px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+  height: 100%; /* Asegura que tenga la misma altura que el input */
+}
+
+#buscarBtn img {
+  vertical-align: middle; /* Centra el icono verticalmente */
+}
+
+/* Estilos para la grilla de obras */
 #obras {
-  flex: 1; /* Toma el resto del espacio disponible */
   padding: 20px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  gap: 20px;
 }
 
 .grid-item {
-  border: 1px solid #ddd;
-  padding: 1rem;
-  background: #f9f9f9;
-  border-radius: 5px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
   text-align: center;
 }
 
 .grid-item img {
-  width: auto;
-  height: 80px;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 0.5rem;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
 }
 
-h3 {
-  margin: 0.5rem 0;
+.grid-item h3 {
+  margin: 10px 0;
+  color: #333;
 }
 
-p {
-  font-size: 0.9rem;
+.grid-item p {
+  margin: 5px 0;
   color: #666;
 }
 
-#opciones {
-  padding: 10px;
-  margin: 10px 0;
-  font-size: 1rem;
+a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Estilos para la paginación */
+nav.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+nav.pagination button {
+  margin: 0 5px;
 }
