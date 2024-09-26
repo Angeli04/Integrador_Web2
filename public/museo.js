@@ -10,7 +10,7 @@ document.getElementById('filtrarBtn').addEventListener('click', async function()
     url = `/filtrardepartamento/${encodeURIComponent(departamentoSeleccionado)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${pagina}`;
   } else if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada ==="") {
     url = `/filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}?page=${pagina}`;
-  } else if (paisSeleccionado !== "paises" && departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && fraseSeleccionada ==="") {
+  } else if (departamentoSeleccionado == "null" || departamentoSeleccionado == "Opciones" && fraseSeleccionada === "" && paisSeleccionado !="paises") {
     url = `/filtrar/pais/${encodeURIComponent(paisSeleccionado)}?page=${pagina}`;
   } else if(fraseSeleccionada != '' && departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises"){
     url = `/filtrar/frase/${encodeURIComponent(fraseSeleccionada)}?page=${pagina}`;
@@ -52,7 +52,7 @@ document.getElementById('paginaSiguiente').addEventListener('click', async funct
     url = `/filtrardepartamento/${encodeURIComponent(departamentoSeleccionado)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`;
   } else if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada ==="") {
     url = `/filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}?page=${nuevaPagina}`;
-  } else if (paisSeleccionado !== "paises" && departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && fraseSeleccionada ==="") {
+  } else if (departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada ==="") {
     url = `/filtrar/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`;
   } else if(fraseSeleccionada != '' && departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises"){
     url = `/filtrar/frase/${encodeURIComponent(fraseSeleccionada)}?page=${nuevaPagina}`;
@@ -98,7 +98,7 @@ document.getElementById('paginaAnterior').addEventListener('click', async functi
       url = `/filtrardepartamento/${encodeURIComponent(departamentoSeleccionado)}/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`;
     } else if (departamentoSeleccionado !== "null" && departamentoSeleccionado !== "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada ==="") {
       url = `/filtrar/departamento/${encodeURIComponent(departamentoSeleccionado)}?page=${nuevaPagina}`;
-    } else if (paisSeleccionado !== "paises" && departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && fraseSeleccionada ==="") {
+    } else if (departamentoSeleccionado === "null" || departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises" && fraseSeleccionada ==="") {
       url = `/filtrar/pais/${encodeURIComponent(paisSeleccionado)}?page=${nuevaPagina}`;
     } else if(fraseSeleccionada != '' && departamentoSeleccionado === "Opciones" && paisSeleccionado === "paises"){
       url = `/filtrar/frase/${encodeURIComponent(fraseSeleccionada)}?page=${nuevaPagina}`;
