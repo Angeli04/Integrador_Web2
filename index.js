@@ -6,7 +6,7 @@ import { listarDepartamentos } from './departments.js';
 import { paginarObrasDepartamento,paginarObrasPais,paginarObrasDepartamentoPais,paginarObrasFrase,paginarObrasFrasePais,paginarObrasDepartamentoFrase,paginarObrasCompleto } from './filtro.js';
 import { getArt } from './obras.js';
 const app = express();
-const PUERTO = 3000;
+const PUERTO = process.env.PORT || 3000;
 
 // Configurar archivos estáticos
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
