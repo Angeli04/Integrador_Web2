@@ -2,38 +2,44 @@ import { response } from 'express';
 import { traducir, getArt } from './obras.js';
 
 export function paginarObrasDepartamento() {
-    
-    let indiceID = 0;  // Índice que mantendremos a través del closure
-    let obrasGuardadas = []; // Aquí se almacenarán todas las obras obtenidas
+    let indiceID = 0;
+    let obrasGuardadas = [];
+    let ultimoDepartamento = null; // Para verificar si el departamento cambia
 
-    // Este closure mantiene el estado de `indiceID` y `obrasGuardadas`
-    return async function obtenerPaginaDpto(pagina,obrasPorPagina,idDepartment) {
-        const aver = await obtenerIdsDepartamento(idDepartment); // Obtiene los IDs del departamento
+    return async function obtenerPaginaDpto(pagina, obrasPorPagina, idDepartment) {
+        // Verifica si el departamento cambió
+        if (idDepartment !== ultimoDepartamento) {
+            // Si el departamento cambió, resetea el indice y las obras guardadas
+            indiceID = 0;
+            obrasGuardadas = [];
+            ultimoDepartamento = idDepartment; // Actualiza el ultimo departamento
+        }
+
+        const aver = await obtenerIdsDepartamento(idDepartment);
         let inicio = (pagina - 1) * obrasPorPagina;
         let final = pagina * obrasPorPagina;
 
-        // Si ya tienes suficientes obras guardadas para cubrir la página solicitada
+        // Si ya tiene suficientes obras guardadas para cubrir la página solicitada
         if (obrasGuardadas.length >= final) {
-            // Devuelve las obras ya guardadas de esa página
             return obrasGuardadas.slice(inicio, final);
         }
 
-        // Si no tienes suficientes obras, sigue obteniendo hasta llenar la página
+        // Si no tienee suficientes obras, sigue obteniendo hasta llenar la página
         while (obrasGuardadas.length < final && indiceID < aver.length) {
-            const obraData = await getArt(aver[indiceID]);  // Obtén la obra usando el ID actual del array
+            const obraData = await getArt(aver[indiceID]);
 
             if (obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)) {
-                obrasGuardadas.push(obraData); // Guarda la obra en `obrasGuardadas`
+                obrasGuardadas.push(obraData);
                 console.log(`${aver[indiceID]} Conseguido`);
             } else {
                 console.log(`${aver[indiceID]} Duplicado o no disponible`);
             }
-            indiceID++;  // Incrementa el índice para obtener el siguiente ID
+            indiceID++;
         }
 
-        console.log(`Ultimo ID guardado: ${indiceID}`)
+        console.log(`Ultimo ID guardado: ${indiceID}`);
 
-        return obrasGuardadas.slice(inicio, final); // Devuelve las obras de la página solicitada
+        return obrasGuardadas.slice(inicio, final);
     };
 }
 
@@ -77,62 +83,86 @@ export async function obtenerIdsPaises(pais) {
 
 export function paginarObrasPais() {
     let indiceID = 0;
-    let obrasGuardadas = []
+    let obrasGuardadas = [];
+    let ultimoPais = null;  // Variable para almacenar el último país consultado
 
-    return async function obtenerPaginaPais(pagina,obrasPorPagina,nombrePais) {
-        const aver = await obtenerIdsPaises(nombrePais)
-        let inicio = (pagina-1) * obrasPorPagina
+    return async function obtenerPaginaPais(pagina, obrasPorPagina, nombrePais) {
+        // Si el país cambió, reiniciamos las variables internas
+        if (nombrePais !== ultimoPais) {
+            indiceID = 0;
+            obrasGuardadas = [];
+            ultimoPais = nombrePais;
+            console.log(`Cambio de país detectado: Reiniciando obras guardadas para ${nombrePais}`);
+        }
+
+        const aver = await obtenerIdsPaises(nombrePais);
+        let inicio = (pagina - 1) * obrasPorPagina;
         let final = pagina * obrasPorPagina;
 
         if (obrasGuardadas.length >= final) {
-            return obrasGuardadas.slice(inicio, final)
+            return obrasGuardadas.slice(inicio, final);
         }
 
         while (obrasGuardadas.length < final && indiceID < aver.length) {
-            const obraData = await getArt(aver[indiceID])
+            const obraData = await getArt(aver[indiceID]);
 
-            if(obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)){
+            if (obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)) {
                 obrasGuardadas.push(obraData);
-                console.log(`${aver[indiceID]} Conseguido`)
+                console.log(`${aver[indiceID]} Conseguido`);
             } else {
-                console.log(`${aver[indiceID]} Duplicado o no disponible`)
+                console.log(`${aver[indiceID]} Duplicado o no disponible`);
             }
             indiceID++;
         }
-        console.log(`Ultimo ID guardado: ${indiceID}`)
-        return obrasGuardadas.slice(inicio,final);
+        console.log(`Ultimo ID guardado: ${indiceID}`);
+        return obrasGuardadas.slice(inicio, final);
     };
 }
 
-export function paginarObrasDepartamentoPais(){
-
+export function paginarObrasDepartamentoPais() {
     let indiceID = 0;
-    let obrasGuardadas = []
+    let obrasGuardadas = [];
+    let ultimoDepartamento = null;
+    let ultimoPais = null;
 
-    return async function obtenerPaginaDepartamentoPais(pagina,obrasPorPagina,idDepartment,nombrePais) {
-        const idsPaises = await obtenerIdsPaises(nombrePais)
-        const idsDepartamento = await obtenerIdsDepartamento(idDepartment)
-        let inicio = (pagina-1) * obrasPorPagina
-        let final = pagina * obrasPorPagina
-        const idsCompletos = idsPaises.filter(numero => idsDepartamento.includes(numero));
-
-        if (obrasGuardadas.length >= final) {
-            return obrasGuardadas.slice(inicio,final)
+    return async function obtenerPaginaDepartamentoPais(pagina, obrasPorPagina, idDepartment, nombrePais) {
+        // Verifica si el departamento o el país han cambiado
+        if (idDepartment !== ultimoDepartamento || nombrePais !== ultimoPais) {
+            // Si el departamento o país cambian, resetea el índice y las obras guardadas
+            indiceID = 0;
+            obrasGuardadas = [];
+            ultimoDepartamento = idDepartment; // Actualiza el último departamento
+            ultimoPais = nombrePais; // Actualiza el último país
         }
 
-        while (obrasGuardadas.length < final && indiceID < idsCompletos.length){
-            const obraData = await getArt(idsCompletos[indiceID])
+        const idsPaises = await obtenerIdsPaises(nombrePais);
+        const idsDepartamento = await obtenerIdsDepartamento(idDepartment);
+        const idsCompletos = idsPaises.filter(numero => idsDepartamento.includes(numero));
 
-            if(obraData && !obrasGuardadas.some(o=> o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)){
-                obrasGuardadas.push(obraData)
-                console.log(`${idsCompletos[indiceID]} Conseguido`)
+        let inicio = (pagina - 1) * obrasPorPagina;
+        let final = pagina * obrasPorPagina;
+
+        // Si ya tienes suficientes obras guardadas para cubrir la página solicitada
+        if (obrasGuardadas.length >= final) {
+            return obrasGuardadas.slice(inicio, final);
+        }
+
+        // Si no tienes suficientes obras, sigue obteniendo hasta llenar la página
+        while (obrasGuardadas.length < final && indiceID < idsCompletos.length) {
+            const obraData = await getArt(idsCompletos[indiceID]);
+
+            if (obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)) {
+                obrasGuardadas.push(obraData);
+                console.log(`${idsCompletos[indiceID]} Conseguido`);
             } else {
-                console.log(`${idsCompletos[indiceID]} Duplicado o no disponible`)
+                console.log(`${idsCompletos[indiceID]} Duplicado o no disponible`);
             }
             indiceID++;
         }
-        console.log(`Ultimo ID guardado: ${indiceID}`)
-        return obrasGuardadas.slice(inicio,final)
+
+        console.log(`Ultimo ID guardado: ${indiceID}`);
+
+        return obrasGuardadas.slice(inicio, final);
     };
 }
 
@@ -153,33 +183,46 @@ async function obtenerIdsFrase(frase){
     }
 }
 
-export function paginarObrasFrase(){
+export function paginarObrasFrase() {
     let indiceID = 0;
-    let obrasGuardadas = []
+    let obrasGuardadas = [];
+    let ultimaFrase = null;
 
-    return async function obtenerPaginaFrase(pagina,obrasPorPagina,frase) {
-        const aver = await obtenerIdsFrase(frase) // traigo un arreglo de ids que contienen la frase
-        let inicio = (pagina-1) * obrasPorPagina
-        let final = pagina * obrasPorPagina;
-
-        if (obrasGuardadas.length >= final) {
-            return obrasGuardadas.slice(inicio, final)
+    return async function obtenerPaginaFrase(pagina, obrasPorPagina, frase) {
+        // Verifica si la frase ha cambiado
+        if (frase !== ultimaFrase) {
+            // Si la frase cambia, resetea el índice y las obras guardadas
+            indiceID = 0;
+            obrasGuardadas = [];
+            ultimaFrase = frase; // Actualiza la última frase
         }
 
-        while (obrasGuardadas.length < final && indiceID < aver.length) {
-            const obraData = await getArt(aver[indiceID])
+        const aver = await obtenerIdsFrase(frase); // Obtiene un arreglo de IDs que contienen la frase
+        let inicio = (pagina - 1) * obrasPorPagina;
+        let final = pagina * obrasPorPagina;
 
-            if(obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)){
+        // Si ya tienes suficientes obras guardadas para cubrir la página solicitada
+        if (obrasGuardadas.length >= final) {
+            return obrasGuardadas.slice(inicio, final);
+        }
+
+        // Si no tienes suficientes obras, sigue obteniendo hasta llenar la página
+        while (obrasGuardadas.length < final && indiceID < aver.length) {
+            const obraData = await getArt(aver[indiceID]);
+
+            if (obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)) {
                 obrasGuardadas.push(obraData);
-                console.log(`${aver[indiceID]} Conseguido`)
+                console.log(`${aver[indiceID]} Conseguido`);
             } else {
-                console.log(`${aver[indiceID]} Duplicado o no disponible`)
+                console.log(`${aver[indiceID]} Duplicado o no disponible`);
             }
             indiceID++;
         }
-        console.log(`Ultimo ID guardado: ${aver[indiceID]}`)
-        return obrasGuardadas.slice(inicio,final);
-    }
+
+        console.log(`Ultimo ID guardado: ${aver[indiceID]}`);
+
+        return obrasGuardadas.slice(inicio, final);
+    };
 }
 
 async function obtenerIdsFrasePais(frase,pais) {
@@ -201,30 +244,48 @@ async function obtenerIdsFrasePais(frase,pais) {
 
 }
 
-export function paginarObrasFrasePais(){
+export function paginarObrasFrasePais() {
     let indiceID = 0;
-    let obrasGuardadas = []
-    return async function obtenerPaginaFrasePais(pagina,obrasPorPagina,frase,pais){
-        const aver = await obtenerIdsFrasePais(frase,pais)
-        let inicio = (pagina-1) * obrasPorPagina
-        let final = pagina * obrasPorPagina;
-        if(obrasGuardadas.length >=final){
-            return obrasGuardadas.slice(inicio,final)
-        }
-        while (obrasGuardadas.length < final && indiceID < aver.length) {
-            const obraData = await getArt(aver[indiceID])
+    let obrasGuardadas = [];
+    let ultimaFrase = null;
+    let ultimoPais = null;
 
-            if(obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)){
+    return async function obtenerPaginaFrasePais(pagina, obrasPorPagina, frase, pais) {
+        // Verifica si la frase o el país han cambiado
+        if (frase !== ultimaFrase || pais !== ultimoPais) {
+            // Si cambian, reinicia el índice y las obras guardadas
+            indiceID = 0;
+            obrasGuardadas = [];
+            ultimaFrase = frase; // Actualiza la última frase
+            ultimoPais = pais;   // Actualiza el último país
+        }
+
+        const aver = await obtenerIdsFrasePais(frase, pais); // Obtiene un arreglo de IDs que contienen la frase y el país
+        let inicio = (pagina - 1) * obrasPorPagina;
+        let final = pagina * obrasPorPagina;
+
+        // Si ya tienes suficientes obras guardadas para cubrir la página solicitada
+        if (obrasGuardadas.length >= final) {
+            return obrasGuardadas.slice(inicio, final);
+        }
+
+        // Si no tienes suficientes obras, sigue obteniendo hasta llenar la página
+        while (obrasGuardadas.length < final && indiceID < aver.length) {
+            const obraData = await getArt(aver[indiceID]);
+
+            if (obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)) {
                 obrasGuardadas.push(obraData);
-                console.log(`${aver[indiceID]} Conseguido`)
+                console.log(`${aver[indiceID]} Conseguido`);
             } else {
-                console.log(`${aver[indiceID]} Duplicado o no disponible`)
+                console.log(`${aver[indiceID]} Duplicado o no disponible`);
             }
             indiceID++;
         }
-        console.log(`Ultimo ID guardado: ${aver[indiceID]}`)
-        return obrasGuardadas.slice(inicio,final);
-    }
+
+        console.log(`Ultimo ID guardado: ${aver[indiceID]}`);
+
+        return obrasGuardadas.slice(inicio, final);
+    };
 }
 
 async function obtenerIdsDepartamentoFrase(departamento,frase) {
@@ -244,30 +305,48 @@ async function obtenerIdsDepartamentoFrase(departamento,frase) {
     }
 }
 
-export function paginarObrasDepartamentoFrase(){
+export function paginarObrasDepartamentoFrase() {
     let indiceID = 0;
-    let obrasGuardadas = []
-    return async function obtenerPaginaDepartamentoFrase(pagina,obrasPorPagina,frase,departamento) {
-        const aver = await obtenerIdsDepartamentoFrase(departamento,frase)
-        let inicio = (pagina-1) * obrasPorPagina
-        let final = pagina * obrasPorPagina;
-        if(obrasGuardadas.length >=final){
-            return obrasGuardadas.slice(inicio,final)
-        }
-        while (obrasGuardadas.length < final && indiceID < aver.length) {
-            const obraData = await getArt(aver[indiceID])
+    let obrasGuardadas = [];
+    let ultimaFrase = null;
+    let ultimoDepartamento = null;
 
-            if(obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)){
+    return async function obtenerPaginaDepartamentoFrase(pagina, obrasPorPagina, frase, departamento) {
+        // Verifica si la frase o el departamento han cambiado
+        if (frase !== ultimaFrase || departamento !== ultimoDepartamento) {
+            // Si cambian, reinicia el índice y las obras guardadas
+            indiceID = 0;
+            obrasGuardadas = [];
+            ultimaFrase = frase; // Actualiza la última frase
+            ultimoDepartamento = departamento; // Actualiza el último departamento
+        }
+
+        const aver = await obtenerIdsDepartamentoFrase(departamento, frase); // Obtiene un arreglo de IDs que contienen la frase y el departamento
+        let inicio = (pagina - 1) * obrasPorPagina;
+        let final = pagina * obrasPorPagina;
+
+        // Si ya tienes suficientes obras guardadas para cubrir la página solicitada
+        if (obrasGuardadas.length >= final) {
+            return obrasGuardadas.slice(inicio, final);
+        }
+
+        // Si no tienes suficientes obras, sigue obteniendo hasta llenar la página
+        while (obrasGuardadas.length < final && indiceID < aver.length) {
+            const obraData = await getArt(aver[indiceID]);
+
+            if (obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)) {
                 obrasGuardadas.push(obraData);
-                console.log(`${aver[indiceID]} Conseguido`)
+                console.log(`${aver[indiceID]} Conseguido`);
             } else {
-                console.log(`${aver[indiceID]} Duplicado o no disponible`)
+                console.log(`${aver[indiceID]} Duplicado o no disponible`);
             }
             indiceID++;
         }
-        console.log(`Ultimo ID guardado: ${aver[indiceID]}`)
-        return obrasGuardadas.slice(inicio,final);
-    }
+
+        console.log(`Ultimo ID guardado: ${aver[indiceID]}`);
+
+        return obrasGuardadas.slice(inicio, final);
+    };
 }
 
 async function obtenerIdsDepartamentoFrasePais(departamento,frase,pais) {
@@ -289,29 +368,48 @@ async function obtenerIdsDepartamentoFrasePais(departamento,frase,pais) {
     }
 }
 
-export function paginarObrasCompleto(){
-    let indiceID = 0
-    let obrasGuardadas = []
+export function paginarObrasCompleto() {
+    let indiceID = 0;
+    let obrasGuardadas = [];
+    let ultimaFrase = null;
+    let ultimoDepartamento = null;
+    let ultimoPais = null;
 
-    return async function obtenerPaginaCompleto(pagina,obrasPorPagina,frase,departamento,pais){
-        const aver = await obtenerIdsDepartamentoFrasePais(departamento,frase,pais)
-        let inicio = (pagina-1) * obrasPorPagina
-        let final = pagina * obrasPorPagina;
-        if(obrasGuardadas.length >=final){
-            return obrasGuardadas.slice(inicio,final)
+    return async function obtenerPaginaCompleto(pagina, obrasPorPagina, frase, departamento, pais) {
+        // Verifica si alguno de los parámetros ha cambiado
+        if (frase !== ultimaFrase || departamento !== ultimoDepartamento || pais !== ultimoPais) {
+            // Si cambian, reinicia el índice y las obras guardadas
+            indiceID = 0;
+            obrasGuardadas = [];
+            ultimaFrase = frase; // Actualiza el último valor de frase
+            ultimoDepartamento = departamento; // Actualiza el último valor de departamento
+            ultimoPais = pais; // Actualiza el último valor de país
         }
-        while (obrasGuardadas.length < final && indiceID < aver.length) {
-            const obraData = await getArt(aver[indiceID])
 
-            if(obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)){
+        const aver = await obtenerIdsDepartamentoFrasePais(departamento, frase, pais); // Obtiene los IDs que cumplen con todos los filtros
+        let inicio = (pagina - 1) * obrasPorPagina;
+        let final = pagina * obrasPorPagina;
+
+        // Si ya tienes suficientes obras guardadas para cubrir la página solicitada
+        if (obrasGuardadas.length >= final) {
+            return obrasGuardadas.slice(inicio, final);
+        }
+
+        // Si no tienes suficientes obras, sigue obteniendo hasta llenar la página
+        while (obrasGuardadas.length < final && indiceID < aver.length) {
+            const obraData = await getArt(aver[indiceID]);
+
+            if (obraData && !obrasGuardadas.some(o => o.titulo === obraData.titulo && o.fechaCreacion === obraData.fechaCreacion)) {
                 obrasGuardadas.push(obraData);
-                console.log(`${aver[indiceID]} Conseguido`)
+                console.log(`${aver[indiceID]} Conseguido`);
             } else {
-                console.log(`${aver[indiceID]} Duplicado o no disponible`)
+                console.log(`${aver[indiceID]} Duplicado o no disponible`);
             }
             indiceID++;
         }
-        console.log(`Ultimo ID guardado: ${aver[indiceID]}`)
-        return obrasGuardadas.slice(inicio,final);
-    }
+
+        console.log(`Ultimo ID guardado: ${aver[indiceID]}`);
+
+        return obrasGuardadas.slice(inicio, final);
+    };
 }
