@@ -30,8 +30,12 @@ document.getElementById('filtrarBtn').addEventListener('click', async function()
     const response = await fetch(url);
     if (response.ok) {
       const html = await response.text();
-      document.getElementById('obras').innerHTML = html;
-      window.history.pushState({}, '', url);
+      if(html===`<div class="grid"> </div>`){
+        alert("La busqueda intentada no obtuvo ningun resultado, intente nuevamente con modificaciones en los filtros")
+      }else{
+        document.getElementById('obras').innerHTML = html;
+        window.history.pushState({}, '', url);
+      }
     } else {
       console.error('Error en la respuesta del servidor:', response.statusText);
     }
@@ -72,9 +76,12 @@ document.getElementById('paginaSiguiente').addEventListener('click', async funct
     const response = await fetch(url);
     if (response.ok) {
       const html = (await response.text());
-      document.getElementById('obras').innerHTML = html;
-      // Actualizar la URL en la barra de direcciones sin recargar la página
-      window.history.pushState({}, '', url);
+      if(html === `<div class="grid"> </div>`){
+        alert("Ya no hay más obras segun los parametros solicitados :(")
+      }else{
+        document.getElementById('obras').innerHTML = html;
+        window.history.pushState({}, '', url);
+      }
     } else {
       console.error('Error en la respuesta del servidor:', response.statusText);
     }
